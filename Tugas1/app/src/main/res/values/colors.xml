@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <color name="bg_light">#F4F6FB</color>
+    <color name="primary">#5B6EF5</color>
+    <color name="primary_dark">#3F4FD1</color>
+    <color name="text_dark">#2D2F41</color>
+    <color name="text_muted">#8A8FA3</color>
+    <color name="card_bg">#FFFFFF</color>
+    <color name="input_bg">#F0F2FA</color>
+    <color name="input_stroke">#DCE0F0</color>
+    <color name="result_bg">#EEF1FF</color>
+</resources>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_light"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="16dp"
+        android:text="Kalkulator Sederhana"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/primary_dark"
+        android:letterSpacing="0.02" />
+
+    <TextView
+        android:id="@+id/tvSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="4dp"
+        android:text="Masukkan dua angka, lalu pilih operasi"
+        android:textSize="13sp"
+        android:textColor="@color/text_muted" />
+
+    <!-- Card input -->
+    <RelativeLayout
+        android:id="@+id/cardInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvSubtitle"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/bg_card"
+        android:elevation="4dp"
+        android:padding="20dp">
+
+        <EditText
+            android:id="@+id/etAngka1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_input"
+            android:hint="Angka Pertama"
+            android:textColor="@color/text_dark"
+            android:textColorHint="@color/text_muted"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/etAngka2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/etAngka1"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_input"
+            android:hint="Angka Kedua"
+            android:textColor="@color/text_dark"
+            android:textColorHint="@color/text_muted"
+            android:inputType="numberDecimal" />
+    </RelativeLayout>
+
+    <!-- Tombol operasi -->
+    <LinearLayout
+        android:id="@+id/llOperasi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cardInput"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="4">
+
+        <Button
+            android:id="@+id/btnTambah"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_button_operator"
+            android:elevation="2dp"
+            android:onClick="onOperasiClick"
+            android:text="+"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnKurang"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_button_operator"
+            android:elevation="2dp"
+            android:onClick="onOperasiClick"
+            android:text="−"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnKali"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_button_operator"
+            android:elevation="2dp"
+            android:onClick="onOperasiClick"
+            android:text="×"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnBagi"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_button_operator"
+            android:elevation="2dp"
+            android:onClick="onOperasiClick"
+            android:text="÷"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Hasil -->
+    <RelativeLayout
+        android:id="@+id/cardHasil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/llOperasi"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/bg_result"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/tvHasil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="Hasil: 0"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary_dark" />
+    </RelativeLayout>
+
+</RelativeLayout>
