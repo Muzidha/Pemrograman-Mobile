@@ -1,28 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp">
+    android:fillViewport="true"
+    android:background="@color/backgroundColor">
 
-    <TextView
-        android:id="@+id/txtNama"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp" />
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="20dp">
 
-    <TextView
-        android:id="@+id/txtNrp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textSize="18sp" />
+        <!-- Header Title Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Detail Mahasiswa"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="@color/primaryDarkColor"
+            android:layout_marginTop="16dp"/>
 
-    <Button
-        android:id="@+id/btnTutup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Tutup" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Data Berhasil Terkirim dari Halaman 1"
+            android:textSize="14sp"
+            android:textColor="@color/textColorSecondary"
+            android:layout_marginBottom="24dp"/>
 
-</LinearLayout>
+        <!-- Display Card Container -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp"
+            app:cardUseCompatPadding="true"
+            app:strokeWidth="0dp"
+            android:backgroundTint="@color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:gravity="center_horizontal">
+
+                <!-- Display Photo -->
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imgFotoDetail"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:scaleType="centerCrop"
+                    android:src="@android:drawable/ic_menu_camera"
+                    android:background="#E2E8F0"
+                    android:padding="4dp"
+                    app:strokeWidth="2dp"
+                    app:strokeColor="@color/primaryColor"
+                    app:shapeAppearanceOverlay="@style/CircleImageAppearance"
+                    android:layout_marginBottom="24dp"/>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E2E8F0"
+                    android:layout_marginBottom="20dp"/>
+
+                <!-- Display Nama -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nama Lengkap"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primaryColor" />
+                    <TextView
+                        android:id="@+id/txtNama"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/textColorPrimary"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <!-- Display NRP -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="NRP / NIM"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primaryColor" />
+                    <TextView
+                        android:id="@+id/txtNrp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/textColorPrimary"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <!-- Display Program Studi -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="28dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Program Studi"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primaryColor" />
+                    <TextView
+                        android:id="@+id/txtProgramStudi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/textColorPrimary"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <!-- Action Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTutup"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:text="Kembali"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="12dp"/>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</ScrollView>
