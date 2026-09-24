@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Tugas-4</string>
+    <string name="title_data_mahasiswa">Manajemen Data Mahasiswa</string>
+    <string name="subtitle_data_mahasiswa">Sistem Informasi Pengelolaan Data Mahasiswa</string>
+    <string name="hint_nrp">NRP Mahasiswa</string>
+    <string name="hint_nama">Nama Mahasiswa</string>
+    <string name="label_nrp">NRP: %1$s</string>
+    <string name="btn_simpan">Simpan</string>
+    <string name="btn_cari">Cari</string>
+    <string name="btn_update">Update</string>
+    <string name="btn_hapus">Hapus</string>
+    <string name="btn_clear">Reset Form</string>
+    <string name="title_daftar_mahasiswa">Daftar Mahasiswa</string>
+    <string name="title_daftar_mahasiswa_count">Daftar Mahasiswa (%1$d)</string>
+    <string name="empty_data_mahasiswa">Belum ada data mahasiswa tersimpan.</string>
+    <string name="empty_search_data">Data dengan kata kunci \'%1$s\' tidak ditemukan.</string>
+    <string name="btn_tampilkan_semua">Tampilkan Semua</string>
+</resources>
