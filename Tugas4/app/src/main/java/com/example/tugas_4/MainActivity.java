@@ -1,334 +1,322 @@
 package com.example.tugas_4;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ScrollView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText nrp, nama;
-    private SQLiteDatabase dbku;
-    private DatabaseHelper openDb;
+    private ListView lvKontak;
+    private KontakAdapter kAdapter;
+    private SQLiteDatabase dbKu;
+    private DbHelper dbHelper;
 
-    private RecyclerView rvMahasiswa;
-    private TextView tvEmptyState, tvHeaderDaftar;
-    private MaterialButton btnResetFilter;
-    private ScrollView scrollView;
+    private LinearLayout layoutEmptyState;
+    private TextView tvJumlahKontak;
 
-    private final List<Mahasiswa> mahasiswaList = new ArrayList<>();
-    private MahasiswaAdapter adapter;
+    private ArrayList<Kontak> listKontak;
+    private String selectedFotoUri = "";
+    private ImageView activeDialogFotoView = null;
+
+    private final ActivityResultLauncher<String> imagePickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            uri -> {
+                if (uri != null) {
+                    selectedFotoUri = uri.toString();
+                    if (activeDialogFotoView != null) {
+                        try {
+                            activeDialogFotoView.setImageURI(uri);
+                        } catch (Exception e) {
+                            activeDialogFotoView.setImageResource(R.drawable.ic_person);
+                        }
+                    }
+                }
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        nrp = findViewById(R.id.nrp);
-        nama = findViewById(R.id.nama);
+        lvKontak        = findViewById(R.id.lvKontak);
+        layoutEmptyState = findViewById(R.id.layoutEmptyState);
+        tvJumlahKontak  = findViewById(R.id.tvJumlahKontak);
 
-        scrollView = findViewById(R.id.scrollView);
-        rvMahasiswa = findViewById(R.id.rvMahasiswa);
-        tvEmptyState = findViewById(R.id.tvEmptyState);
-        tvHeaderDaftar = findViewById(R.id.tvHeaderDaftar);
-        btnResetFilter = findViewById(R.id.btnResetFilter);
+        ExtendedFloatingActionButton btnTambah = findViewById(R.id.btnTambah);
+        EditText etCari = findViewById(R.id.etCari);
 
-        findViewById(R.id.btnSimpan).setOnClickListener(v -> simpan());
-        findViewById(R.id.btnCari).setOnClickListener(v -> cari());
-        findViewById(R.id.btnUpdate).setOnClickListener(v -> update());
-        findViewById(R.id.btnHapus).setOnClickListener(v -> hapus());
+        listKontak = new ArrayList<>();
+        kAdapter   = new KontakAdapter(this, 0, listKontak);
+        lvKontak.setAdapter(kAdapter);
 
-        if (findViewById(R.id.btnClear) != null) {
-            findViewById(R.id.btnClear).setOnClickListener(v -> resetFields());
-        }
+        dbHelper = new DbHelper(this);
+        dbKu     = dbHelper.getWritableDatabase();
 
-        btnResetFilter.setOnClickListener(v -> {
-            resetFields();
-            loadDataMahasiswa(null);
+        btnTambah.setOnClickListener(v -> tampilkanDialogTambah());
+
+        lvKontak.setOnItemClickListener((parent, view, position, id) -> {
+            Kontak selectedKontak = listKontak.get(position);
+            tampilkanDetailKontak(selectedKontak);
         });
 
-        openDb = new DatabaseHelper(this);
-        dbku = openDb.getWritableDatabase();
-
-        setupRecyclerView();
-        loadDataMahasiswa(null);
-    }
-
-    private void setupRecyclerView() {
-        rvMahasiswa.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new MahasiswaAdapter(mahasiswaList, item -> {
-            nrp.setText(item.getNrp());
-            nama.setText(item.getNama());
-            if (scrollView != null) {
-                scrollView.smoothScrollTo(0, 0);
-            }
-        });
-        rvMahasiswa.setAdapter(adapter);
-    }
-
-    private void loadDataMahasiswa(String searchQuery) {
-        mahasiswaList.clear();
-
-        try (Cursor cursor = TextUtils.isEmpty(searchQuery)
-                ? dbku.rawQuery("SELECT nrp, nama FROM mhs ORDER BY nrp ASC", null)
-                : dbku.rawQuery("SELECT nrp, nama FROM mhs WHERE nrp LIKE ? OR nama LIKE ? ORDER BY nrp ASC",
-                new String[]{"%" + searchQuery.trim() + "%", "%" + searchQuery.trim() + "%"})) {
-
-            if (TextUtils.isEmpty(searchQuery)) {
-                btnResetFilter.setVisibility(View.GONE);
-            } else {
-                btnResetFilter.setVisibility(View.VISIBLE);
-            }
-
-            while (cursor.moveToNext()) {
-                int nrpIdx = cursor.getColumnIndex("nrp");
-                int namaIdx = cursor.getColumnIndex("nama");
-                if (nrpIdx != -1 && namaIdx != -1) {
-                    String nrpVal = cursor.getString(nrpIdx);
-                    String namaVal = cursor.getString(namaIdx);
-                    mahasiswaList.add(new Mahasiswa(nrpVal, namaVal));
+        if (etCari != null) {
+            etCari.addTextChangedListener(new TextWatcher() {
+                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    muatDataKontak(s.toString());
                 }
-            }
+                @Override public void afterTextChanged(Editable s) {}
+            });
         }
 
-        adapter.notifyDataSetChanged();
-
-        if (mahasiswaList.isEmpty()) {
-            tvEmptyState.setVisibility(View.VISIBLE);
-            rvMahasiswa.setVisibility(View.GONE);
-            if (!TextUtils.isEmpty(searchQuery)) {
-                tvEmptyState.setText(getString(R.string.empty_search_data, searchQuery));
-            } else {
-                tvEmptyState.setText(getString(R.string.empty_data_mahasiswa));
-            }
-            tvHeaderDaftar.setText(getString(R.string.title_daftar_mahasiswa));
-        } else {
-            tvEmptyState.setVisibility(View.GONE);
-            rvMahasiswa.setVisibility(View.VISIBLE);
-            tvHeaderDaftar.setText(getString(R.string.title_daftar_mahasiswa_count, mahasiswaList.size()));
-        }
+        muatDataKontak(null);
     }
 
     @Override
     protected void onDestroy() {
-        if (dbku != null && dbku.isOpen()) {
-            dbku.close();
-        }
-        if (openDb != null) {
-            openDb.close();
-        }
+        if (dbKu != null && dbKu.isOpen()) dbKu.close();
+        if (dbHelper != null) dbHelper.close();
         super.onDestroy();
     }
 
-    private void simpan() {
-        String nrpText = nrp.getText().toString().trim();
-        String namaText = nama.getText().toString().trim();
+    // ── Data Loader ────────────────────────────────────────────────────────────
 
-        if (TextUtils.isEmpty(nrpText) || TextUtils.isEmpty(namaText)) {
-            Toast.makeText(this, "NRP dan Nama tidak boleh kosong!", Toast.LENGTH_SHORT).show();
-            return;
+    private void muatDataKontak(String query) {
+        listKontak.clear();
+        List<Kontak> data = dbHelper.getAllKontak(dbKu, query);
+        listKontak.addAll(data);
+        kAdapter.notifyDataSetChanged();
+
+        int jumlah = listKontak.size();
+        if (tvJumlahKontak != null) {
+            tvJumlahKontak.setText(jumlah + " kontak");
         }
 
-        if (isNrpExist(nrpText)) {
-            Toast.makeText(this, "NRP sudah terdaftar! Gunakan Update untuk mengubah.", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        ContentValues data = new ContentValues();
-        data.put("nrp", nrpText);
-        data.put("nama", namaText);
-
-        long result = dbku.insert("mhs", null, data);
-        if (result != -1) {
-            Toast.makeText(this, "Data Tersimpan", Toast.LENGTH_LONG).show();
-            resetFields();
-            loadDataMahasiswa(null);
-        } else {
-            Toast.makeText(this, "Gagal Menyimpan Data", Toast.LENGTH_LONG).show();
+        boolean kosong = listKontak.isEmpty();
+        layoutEmptyState.setVisibility(kosong ? View.VISIBLE : View.GONE);
+        lvKontak.setVisibility(kosong ? View.GONE : View.VISIBLE);
+        if (tvJumlahKontak != null) {
+            tvJumlahKontak.setVisibility(kosong ? View.GONE : View.VISIBLE);
         }
     }
 
-    private void cari() {
-        String nrpText = nrp.getText().toString().trim();
-        String namaText = nama.getText().toString().trim();
+    // ── Dialog Tambah ──────────────────────────────────────────────────────────
 
-        String query = !TextUtils.isEmpty(nrpText) ? nrpText : namaText;
+    private void tampilkanDialogTambah() {
+        selectedFotoUri = "";
+        View viewInput = LayoutInflater.from(this).inflate(R.layout.add_kontak, null);
 
-        if (TextUtils.isEmpty(query)) {
-            Toast.makeText(this, "Masukkan NRP atau Nama untuk mencari!", Toast.LENGTH_SHORT).show();
-            loadDataMahasiswa(null);
-            return;
-        }
+        final EditText etNik    = viewInput.findViewById(R.id.etNik);
+        final EditText etNama   = viewInput.findViewById(R.id.etNama);
+        final EditText etNoHp   = viewInput.findViewById(R.id.etNoHp);
+        final EditText etAlamat = viewInput.findViewById(R.id.etAlamat);
+        final ImageView imgDialogFoto  = viewInput.findViewById(R.id.imgDialogFoto);
+        final View layoutPilihFoto     = viewInput.findViewById(R.id.layoutPilihFoto);
 
-        loadDataMahasiswa(query);
-
-        if (!mahasiswaList.isEmpty()) {
-            Mahasiswa firstMatch = mahasiswaList.get(0);
-            nrp.setText(firstMatch.getNrp());
-            nama.setText(firstMatch.getNama());
-            Toast.makeText(this, "Ditemukan " + mahasiswaList.size() + " data", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Data Tidak Ditemukan", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void update() {
-        String nrpText = nrp.getText().toString().trim();
-        String namaText = nama.getText().toString().trim();
-
-        if (TextUtils.isEmpty(nrpText) || TextUtils.isEmpty(namaText)) {
-            Toast.makeText(this, "NRP dan Nama tidak boleh kosong!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        ContentValues data = new ContentValues();
-        data.put("nama", namaText);
-
-        int rows = dbku.update("mhs", data, "nrp = ?", new String[]{nrpText});
-        if (rows > 0) {
-            Toast.makeText(this, "Data Terupdate", Toast.LENGTH_LONG).show();
-            loadDataMahasiswa(null);
-        } else {
-            Toast.makeText(this, "Data Tidak Ditemukan / Gagal Update", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void hapus() {
-        String nrpText = nrp.getText().toString().trim();
-
-        if (TextUtils.isEmpty(nrpText)) {
-            Toast.makeText(this, "Masukkan NRP untuk menghapus!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        int rows = dbku.delete("mhs", "nrp = ?", new String[]{nrpText});
-        if (rows > 0) {
-            Toast.makeText(this, "Data Terhapus", Toast.LENGTH_LONG).show();
-            resetFields();
-            loadDataMahasiswa(null);
-        } else {
-            Toast.makeText(this, "Data Tidak Ditemukan", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private boolean isNrpExist(String nrpText) {
-        try (Cursor cursor = dbku.rawQuery("SELECT 1 FROM mhs WHERE nrp = ?", new String[]{nrpText})) {
-            return cursor.getCount() > 0;
-        }
-    }
-
-    private void resetFields() {
-        nrp.setText("");
-        nama.setText("");
-        nrp.requestFocus();
-        loadDataMahasiswa(null);
-    }
-
-    public static class Mahasiswa {
-        private final String nrp;
-        private final String nama;
-
-        public Mahasiswa(String nrp, String nama) {
-            this.nrp = nrp;
-            this.nama = nama;
-        }
-
-        public String getNrp() {
-            return nrp;
-        }
-
-        public String getNama() {
-            return nama;
-        }
-    }
-
-    public static class MahasiswaAdapter extends RecyclerView.Adapter<MahasiswaAdapter.ViewHolder> {
-
-        public interface OnItemClickListener {
-            void onItemClick(Mahasiswa item);
-        }
-
-        private final List<Mahasiswa> list;
-        private final OnItemClickListener listener;
-
-        public MahasiswaAdapter(List<Mahasiswa> list, OnItemClickListener listener) {
-            this.list = list;
-            this.listener = listener;
-        }
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_mahasiswa, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            Mahasiswa item = list.get(position);
-            Context context = holder.itemView.getContext();
-            holder.tvNama.setText(item.getNama());
-            holder.tvNrp.setText(context.getString(R.string.label_nrp, item.getNrp()));
-            holder.itemView.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onItemClick(item);
-                }
+        if (layoutPilihFoto != null) {
+            layoutPilihFoto.setOnClickListener(v -> {
+                activeDialogFotoView = imgDialogFoto;
+                imagePickerLauncher.launch("image/*");
             });
         }
 
-        @Override
-        public int getItemCount() {
-            return list.size();
+        new AlertDialog.Builder(this)
+                .setTitle("➕ Tambah Kontak Baru")
+                .setView(viewInput)
+                .setPositiveButton("Simpan", (dialog, which) -> {
+                    String nikStr   = etNik.getText().toString().trim();
+                    String namaStr  = etNama.getText().toString().trim();
+                    String nohpStr  = etNoHp.getText().toString().trim();
+                    String alamatStr = etAlamat.getText().toString().trim();
+
+                    if (TextUtils.isEmpty(namaStr)) {
+                        Toast.makeText(this, "⚠️ Nama tidak boleh kosong!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (TextUtils.isEmpty(nikStr)) {
+                        Toast.makeText(this, "⚠️ NIK tidak boleh kosong!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (nikStr.length() != 16) {
+                        Toast.makeText(this, "⚠️ NIK harus 16 digit!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    simpanKontak(nikStr, namaStr, nohpStr, alamatStr, selectedFotoUri);
+                    dialog.dismiss();
+                })
+                .setNegativeButton("Batal", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    // ── Dialog Detail ──────────────────────────────────────────────────────────
+
+    private void tampilkanDetailKontak(Kontak kontak) {
+        View viewDetail = LayoutInflater.from(this).inflate(R.layout.detail_kontak, null);
+
+        ImageView detailFoto   = viewDetail.findViewById(R.id.detailFoto);
+        TextView  detailNama   = viewDetail.findViewById(R.id.detailNama);
+        TextView  detailNik    = viewDetail.findViewById(R.id.detailNik);
+        TextView  detailNoHp   = viewDetail.findViewById(R.id.detailNoHp);
+        TextView  detailAlamat = viewDetail.findViewById(R.id.detailAlamat);
+        LinearLayout rowNoHp   = viewDetail.findViewById(R.id.rowNoHp);
+        View dividerAlamat     = viewDetail.findViewById(R.id.dividerAlamat);
+        LinearLayout rowAlamat = viewDetail.findViewById(R.id.rowAlamat);
+
+        // Nama
+        detailNama.setText(kontak.getNama());
+
+        // NIK (tampilkan langsung angkanya saja)
+        detailNik.setText(TextUtils.isEmpty(kontak.getNik()) ? "-" : kontak.getNik());
+
+        // No HP
+        if (!TextUtils.isEmpty(kontak.getNohp())) {
+            detailNoHp.setText(kontak.getNohp());
+            if (rowNoHp != null) rowNoHp.setVisibility(View.VISIBLE);
+        } else {
+            if (rowNoHp != null) rowNoHp.setVisibility(View.GONE);
         }
 
-        public static class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tvNama, tvNrp;
+        // Alamat
+        if (!TextUtils.isEmpty(kontak.getAlamat())) {
+            detailAlamat.setText(kontak.getAlamat());
+            if (rowAlamat != null)   rowAlamat.setVisibility(View.VISIBLE);
+            if (dividerAlamat != null) dividerAlamat.setVisibility(View.VISIBLE);
+        } else {
+            if (rowAlamat != null)   rowAlamat.setVisibility(View.GONE);
+            if (dividerAlamat != null) dividerAlamat.setVisibility(View.GONE);
+        }
 
-            public ViewHolder(@NonNull View itemView) {
-                super(itemView);
-                tvNama = itemView.findViewById(R.id.tvNama);
-                tvNrp = itemView.findViewById(R.id.tvNrp);
-            }
+        // Foto
+        if (!TextUtils.isEmpty(kontak.getFoto())) {
+            try { detailFoto.setImageURI(Uri.parse(kontak.getFoto())); }
+            catch (Exception e) { detailFoto.setImageResource(R.drawable.ic_person); }
+        } else {
+            detailFoto.setImageResource(R.drawable.ic_person);
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("👤 Detail Kontak")
+                .setView(viewDetail)
+                .setPositiveButton("✏️ Edit", (dialog, which) -> {
+                    dialog.dismiss();
+                    tampilkanDialogEdit(kontak);
+                })
+                .setNeutralButton("🗑️ Hapus", (dialog, which) -> {
+                    dialog.dismiss();
+                    konfirmasiHapus(kontak.getNik());
+                })
+                .setNegativeButton("Tutup", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    // ── Dialog Edit ────────────────────────────────────────────────────────────
+
+    private void tampilkanDialogEdit(Kontak kontak) {
+        selectedFotoUri = kontak.getFoto();
+        View viewInput = LayoutInflater.from(this).inflate(R.layout.add_kontak, null);
+
+        final EditText etNik    = viewInput.findViewById(R.id.etNik);
+        final EditText etNama   = viewInput.findViewById(R.id.etNama);
+        final EditText etNoHp   = viewInput.findViewById(R.id.etNoHp);
+        final EditText etAlamat = viewInput.findViewById(R.id.etAlamat);
+        final ImageView imgDialogFoto = viewInput.findViewById(R.id.imgDialogFoto);
+        final View layoutPilihFoto   = viewInput.findViewById(R.id.layoutPilihFoto);
+
+        // Pre-fill data
+        etNik.setText(kontak.getNik());
+        etNik.setEnabled(false); // NIK adalah primary key, tidak bisa diubah
+        etNama.setText(kontak.getNama());
+        etNoHp.setText(kontak.getNohp());
+        etAlamat.setText(kontak.getAlamat());
+
+        if (!TextUtils.isEmpty(selectedFotoUri)) {
+            try { imgDialogFoto.setImageURI(Uri.parse(selectedFotoUri)); }
+            catch (Exception ignored) {}
+        }
+
+        if (layoutPilihFoto != null) {
+            layoutPilihFoto.setOnClickListener(v -> {
+                activeDialogFotoView = imgDialogFoto;
+                imagePickerLauncher.launch("image/*");
+            });
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("✏️ Edit Kontak")
+                .setView(viewInput)
+                .setPositiveButton("Update", (dialog, which) -> {
+                    String namaStr   = etNama.getText().toString().trim();
+                    String nohpStr   = etNoHp.getText().toString().trim();
+                    String alamatStr = etAlamat.getText().toString().trim();
+
+                    if (TextUtils.isEmpty(namaStr)) {
+                        Toast.makeText(this, "⚠️ Nama tidak boleh kosong!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    updateKontak(new Kontak(kontak.getNik(), namaStr, nohpStr, alamatStr, selectedFotoUri));
+                    dialog.dismiss();
+                })
+                .setNegativeButton("Batal", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    // ── CRUD Operations ────────────────────────────────────────────────────────
+
+    private void simpanKontak(String nik, String nama, String nohp, String alamat, String foto) {
+        Kontak k = new Kontak(nik, nama, nohp, alamat, foto);
+        long result = dbHelper.insertKontak(dbKu, k);
+        if (result != -1) {
+            Toast.makeText(this, "✅ Kontak berhasil disimpan!", Toast.LENGTH_SHORT).show();
+            muatDataKontak(null);
+        } else {
+            Toast.makeText(this, "❌ Gagal! NIK sudah terdaftar.", Toast.LENGTH_LONG).show();
         }
     }
 
-    private static class DatabaseHelper extends SQLiteOpenHelper {
-        private static final String DATABASE_NAME = "db_mahasiswa";
-        private static final int DATABASE_VERSION = 1;
-
-        public DatabaseHelper(Context context) {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    private void updateKontak(Kontak k) {
+        int rows = dbHelper.updateKontak(dbKu, k);
+        if (rows > 0) {
+            Toast.makeText(this, "✅ Kontak berhasil diupdate!", Toast.LENGTH_SHORT).show();
+            muatDataKontak(null);
+        } else {
+            Toast.makeText(this, "❌ Gagal update kontak.", Toast.LENGTH_SHORT).show();
         }
+    }
 
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            db.execSQL("CREATE TABLE IF NOT EXISTS mhs (nrp TEXT PRIMARY KEY, nama TEXT);");
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS mhs");
-            onCreate(db);
-        }
+    private void konfirmasiHapus(String nik) {
+        new AlertDialog.Builder(this)
+                .setTitle("🗑️ Hapus Kontak")
+                .setMessage("Apakah Anda yakin ingin menghapus kontak ini?\nAksi ini tidak dapat dibatalkan.")
+                .setPositiveButton("Hapus", (dialog, which) -> {
+                    dbHelper.deleteKontak(dbKu, nik);
+                    Toast.makeText(this, "🗑️ Kontak berhasil dihapus.", Toast.LENGTH_SHORT).show();
+                    muatDataKontak(null);
+                })
+                .setNegativeButton("Batal", null)
+                .show();
     }
 }
