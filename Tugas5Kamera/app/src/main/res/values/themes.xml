@@ -1,0 +1,18 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Tema utama aplikasi kamera - dark mode -->
+    <style name="Theme.Tugas5Kamera" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Warna utama: oranye kamera -->
+        <item name="colorPrimary">#FF6B35</item>
+        <item name="colorPrimaryVariant">#0D0D0D</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <!-- Warna sekunder -->
+        <item name="colorSecondary">#2196F3</item>
+        <item name="colorSecondaryVariant">#1976D2</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <!-- Status bar hitam -->
+        <item name="android:statusBarColor">#0D0D0D</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <!-- Background hitam -->
+        <item name="android:colorBackground">#0D0D0D</item>
+    </style>
+</resources>
