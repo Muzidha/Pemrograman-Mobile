@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Warna Mode Gelap, otomatis dipakai saat night mode aktif -->
+    <color name="latar">#FF0F1115</color>
+    <color name="kartu">#FF1B1E24</color>
+    <color name="garis">#FF2A2E35</color>
+    <color name="teks_utama">#FFE6E8EC</color>
+    <color name="teks_kedua">#FF9AA0A6</color>
+    <color name="aksen">#FF8AB4F8</color>
+</resources>

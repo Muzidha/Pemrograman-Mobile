@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">TugasSensor</string>
+
+    <string name="judul">Sensor Cahaya</string>
+    <string name="subjudul">Tema aplikasi menyesuaikan cahaya ruangan secara otomatis</string>
+    <string name="deskripsi_ikon">Ikon mode tema</string>
+
+    <string name="lux_kosong">--</string>
+    <string name="satuan_lux">lux</string>
+
+    <string name="kategori_menunggu">Menunggu sensor…</string>
+    <string name="kategori_tidak_tersedia">Sensor tidak tersedia</string>
+    <string name="kategori_gelap">Gelap</string>
+    <string name="kategori_redup">Redup</string>
+    <string name="kategori_terang">Terang</string>
+    <string name="kategori_sangat_terang">Sangat Terang</string>
+
+    <string name="label_mode">Mode saat ini</string>
+    <!-- Diganti oleh values-night/strings.xml saat Mode Gelap -->
+    <string name="mode_aktif">Mode Terang</string>
+
+    <string name="status_menunggu">Tutup sensor cahaya (dekat kamera depan) dengan tangan untuk mencoba</string>
+    <string name="status_sesuai">Tema sudah sesuai dengan cahaya ruangan</string>
+    <string name="status_ke_gelap">Ruangan gelap, beralih ke Mode Gelap…</string>
+    <string name="status_ke_terang">Ruangan terang, beralih ke Mode Terang…</string>
+    <string name="status_tanpa_sensor">Perangkat ini tidak memiliki sensor cahaya</string>
+
+    <string name="info_batas">Gelap: di bawah %1$d lux  •  Terang: di atas %2$d lux</string>
+</resources>
