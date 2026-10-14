@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/latar"
+    android:orientation="vertical"
+    tools:context=".KiblatActivity">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/latar"
+        app:navigationContentDescription="@string/kembali"
+        app:navigationIcon="@drawable/ic_kembali"
+        app:navigationIconTint="@color/teks_utama"
+        app:title="@string/judul_kiblat"
+        app:titleTextColor="@color/teks_utama" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingBottom="24dp">
+
+            <!-- Petunjuk putar kiri / kanan -->
+            <TextView
+                android:id="@+id/tvPetunjuk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:text="@string/petunjuk_menunggu"
+                android:textColor="@color/teks_utama"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvKalibrasi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:text="@string/kalibrasi"
+                android:textColor="@color/peringatan"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <com.example.tugassensor.KompasView
+                android:id="@+id/kompas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:contentDescription="@string/deskripsi_kompas" />
+
+            <!-- Kartu informasi -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:cardBackgroundColor="@color/kartu"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/garis"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_arah_kiblat"
+                                android:textColor="@color/teks_kedua"
+                                android:textSize="13sp" />
+
+                            <TextView
+                                android:id="@+id/tvArahKiblat"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/nilai_kosong"
+                                android:textColor="@color/aksen"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_arah_hp"
+                                android:textColor="@color/teks_kedua"
+                                android:textSize="13sp" />
+
+                            <TextView
+                                android:id="@+id/tvArahHp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/nilai_kosong"
+                                android:textColor="@color/teks_utama"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/label_jarak"
+                        android:textColor="@color/teks_kedua"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tvJarak"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/nilai_kosong"
+                        android:textColor="@color/teks_utama"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/label_lokasi"
+                        android:textColor="@color/teks_kedua"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tvLokasi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/nilai_kosong"
+                        android:textColor="@color/teks_utama"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="@string/tips_kompas"
+                android:textColor="@color/teks_kedua"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

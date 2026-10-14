@@ -7,4 +7,9 @@
     <color name="teks_utama">#FFE6E8EC</color>
     <color name="teks_kedua">#FF9AA0A6</color>
     <color name="aksen">#FF8AB4F8</color>
+
+    <!-- Warna kompas kiblat -->
+    <color name="utara">#FFF28B82</color>
+    <color name="sukses">#FF4ADE80</color>
+    <color name="peringatan">#FFFBBF24</color>
 </resources>

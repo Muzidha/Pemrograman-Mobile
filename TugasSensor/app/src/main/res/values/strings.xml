@@ -26,4 +26,51 @@
     <string name="status_tanpa_sensor">Perangkat ini tidak memiliki sensor cahaya</string>
 
     <string name="info_batas">Gelap: di bawah %1$d lux  •  Terang: di atas %2$d lux</string>
+
+    <!-- Arah Kiblat -->
+    <string name="judul_kiblat">Arah Kiblat</string>
+    <string name="subjudul_kiblat">Kompas dari sensor akselerometer &amp; magnetometer</string>
+    <string name="kembali">Kembali</string>
+    <string name="deskripsi_kompas">Kompas penunjuk arah kiblat</string>
+    <string name="nilai_kosong">--</string>
+
+    <string name="petunjuk_menunggu">Membaca sensor kompas…</string>
+    <string name="petunjuk_pas">Anda sudah menghadap kiblat</string>
+    <string name="petunjuk_kanan">Putar HP ke kanan %1$d°</string>
+    <string name="petunjuk_kiri">Putar HP ke kiri %1$d°</string>
+    <string name="petunjuk_tanpa_sensor">Perangkat ini tidak memiliki sensor akselerometer atau magnetometer</string>
+    <string name="kalibrasi">Kompas kurang akurat. Gerakkan HP membentuk angka 8 untuk kalibrasi.</string>
+    <string name="tips_kompas">Pegang HP mendatar dan jauhkan dari benda logam atau magnet agar arah lebih akurat.</string>
+
+    <string name="label_arah_kiblat">Arah kiblat</string>
+    <string name="label_arah_hp">Arah HP</string>
+    <string name="label_jarak">Jarak ke Ka\'bah</string>
+    <string name="label_lokasi">Lokasi</string>
+
+    <string name="format_arah">%1$d° %2$s</string>
+    <string name="format_jarak">%1$,.0f km</string>
+    <string name="format_lokasi">Lat %1$.4f • Long %2$.4f\n(%3$s)</string>
+
+    <string name="sumber_mencari">default Jakarta, sedang mencari lokasi Anda…</string>
+    <string name="sumber_izin_ditolak">default Jakarta, izin lokasi ditolak</string>
+    <string name="sumber_lokasi_mati">default Jakarta, layanan lokasi mati</string>
+    <string name="sumber_terakhir">lokasi terakhir diketahui</string>
+    <string name="sumber_terkini">lokasi terkini</string>
+
+    <string-array name="label_kompas">
+        <item>U</item>
+        <item>T</item>
+        <item>S</item>
+        <item>B</item>
+    </string-array>
+    <string-array name="arah_mata_angin">
+        <item>Utara</item>
+        <item>Timur Laut</item>
+        <item>Timur</item>
+        <item>Tenggara</item>
+        <item>Selatan</item>
+        <item>Barat Daya</item>
+        <item>Barat</item>
+        <item>Barat Laut</item>
+    </string-array>
 </resources>

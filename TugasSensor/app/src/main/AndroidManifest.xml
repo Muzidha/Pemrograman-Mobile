@@ -7,6 +7,16 @@
     <uses-feature
         android:name="android.hardware.sensor.light"
         android:required="false" />
+    <uses-feature
+        android:name="android.hardware.sensor.accelerometer"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.sensor.compass"
+        android:required="false" />
+
+    <!-- Lokasi dipakai untuk menghitung arah kiblat dari posisi pengguna -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -26,6 +36,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Perhitungan arah kompas mengasumsikan HP dalam posisi tegak (portrait) -->
+        <activity
+            android:name=".KiblatActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

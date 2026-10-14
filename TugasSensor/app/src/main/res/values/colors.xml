@@ -15,4 +15,9 @@
     <color name="teks_utama">#FF1A1C1E</color>
     <color name="teks_kedua">#FF5F6368</color>
     <color name="aksen">#FFF59E0B</color>
+
+    <!-- Warna kompas kiblat -->
+    <color name="utara">#FFE53935</color>
+    <color name="sukses">#FF16A34A</color>
+    <color name="peringatan">#FFB45309</color>
 </resources>
